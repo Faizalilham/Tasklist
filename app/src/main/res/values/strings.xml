@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">tasklist</string>
+    <string-array name="status">
+        <item>Ongoing</item>
+        <item>Finish</item>
+    </string-array>
+</resources>
