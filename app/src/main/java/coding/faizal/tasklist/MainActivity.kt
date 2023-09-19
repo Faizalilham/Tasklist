@@ -45,13 +45,26 @@ class MainActivity : AppCompatActivity() {
 
         taskViewModel.task.observe(this){
             Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
+            Log.d("TASK TABLE","$it")
+        }
+
+        taskViewModel.user.observe(this){
+            Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
+            Log.d("USER TABLE","$it")
         }
 
         taskViewModel.status.observe(this){
             Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
+            Log.d("STATUS TABLE","$it")
         }
+
         binding.fabAdd.setOnClickListener {
-            startActivity(Intent(this,UserActivity::class.java))
+//            startActivity(Intent(this,UserActivity::class.java))
+
+            startActivity(Intent(this,AddActivity::class.java).also{
+                it.putExtra("id_user",1)
+            })
+
         }
 
     }
@@ -68,9 +81,7 @@ class MainActivity : AppCompatActivity() {
             listData.toMutableList(),
             object  : TaskAdapter.OnClick{
                 override fun onClickItem(data: Task) {
-                   startActivity(Intent(this@MainActivity,AddActivity::class.java).also {
-                       it.putExtra("data",data)
-                   })
+                    Toast.makeText(this@MainActivity, "$data", Toast.LENGTH_SHORT).show()
                 }
             }
         )

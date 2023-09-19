@@ -16,21 +16,25 @@ class RoomHelper(private val context: Context) : RoomDatabase.Callback() {
         super.onCreate(db)
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            val database = Room.databaseBuilder(context, RoomDB::class.java, "Taskk").build()
+            val database = Room.databaseBuilder(context, RoomDB::class.java, "Tasked").build()
             val userDao = database.dao()
 
             val user1 = UserEntity(0, "Faizal")
             val user2 = UserEntity(0, "Falakh")
 
 
-            val status1 = StatusEntity(0, "Ongoing")
-            val status2 = StatusEntity(0, "Finish")
+            val status1 = StatusEntity(0, "Ongoing",1)
+            val status2 = StatusEntity(0, "Finish",2)
+            val status3 = StatusEntity(0, "Ongoing",1)
+            val status4 = StatusEntity(0, "Finish",2)
 
             userDao.insertDataUser(user1)
             userDao.insertDataUser(user2)
 
             userDao.insertDataStatus(status1)
             userDao.insertDataStatus(status2)
+            userDao.insertDataStatus(status3)
+            userDao.insertDataStatus(status4)
 
             database.close()
         }

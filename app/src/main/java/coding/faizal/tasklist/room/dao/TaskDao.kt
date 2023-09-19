@@ -29,13 +29,19 @@ interface TaskDao {
     @Query("SELECT * FROM UserEntity")
     fun getAllUser(): LiveData<MutableList<UserEntity>>
 
+    @Query("SELECT * FROM UserEntity WHERE id_user=:id")
+    fun getUserById(id : Int): UserEntity
+
+    @Query("SELECT * FROM StatusEntity WHERE id_user=:id")
+    fun getStatusByIdUser(id : Int): List<StatusEntity>
+
     @Query("SELECT * FROM StatusEntity")
     fun getAllStatus(): LiveData<List<StatusEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDataUser(data : UserEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDataStatus(data : StatusEntity)
 
 

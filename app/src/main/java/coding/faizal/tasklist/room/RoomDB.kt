@@ -12,7 +12,7 @@ import coding.faizal.tasklist.room.utils.RoomHelper
 
 @Database(
     entities = [TaskEntity::class,UserEntity::class,StatusEntity::class],
-    version = 1
+    version = 2
 )
 abstract class RoomDB  : RoomDatabase() {
     abstract fun dao(): TaskDao
@@ -32,7 +32,7 @@ abstract class RoomDB  : RoomDatabase() {
         fun buildDatabase(context: Context) = Room.databaseBuilder(
             context.applicationContext,
             RoomDB::class.java,
-            "Taskk"
+            "Tasked"
         ).addCallback(RoomHelper(context)).fallbackToDestructiveMigration().build()
 
     }

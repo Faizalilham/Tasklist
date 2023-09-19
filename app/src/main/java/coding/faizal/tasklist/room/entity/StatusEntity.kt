@@ -1,12 +1,19 @@
 package coding.faizal.tasklist.room.entity
 
 import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id_user"],
+            childColumns = ["id_user"],
+            onDelete = ForeignKey.CASCADE
+        ),
+    ],
+    indices = [Index("id_user")]
+)
 data class StatusEntity(
 
     @PrimaryKey(autoGenerate = true)
@@ -16,5 +23,8 @@ data class StatusEntity(
 
     @ColumnInfo(name = "name_status")
     val nameStatus : String?,
+
+    @ColumnInfo(name = "id_user")
+    val idUser : Int
 
 )

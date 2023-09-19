@@ -23,7 +23,8 @@ class AddActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     private var _binding : ActivityAddBinding? = null
     private val binding get() = _binding!!
     private lateinit var taskViewModel: TaskViewModel
-    private var resultDropDown = ""
+    private var resultDropDown = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,32 +33,48 @@ class AddActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         taskViewModel = ViewModelProvider(this,viewModelFactory)[TaskViewModel::class.java]
         setContentView(binding.root)
 
-        dropDownMenu()
+        val dataIdUser = intent.getIntExtra("id_user",1)
 
+        taskViewModel.getUserById(dataIdUser)
+        taskViewModel.getStatusByIdUser(dataIdUser)
 
-        val dataIntent = intent.getParcelableExtra<UserEntity>("data")
-        Toast.makeText(this, "${dataIntent?.id_user}", Toast.LENGTH_SHORT).show()
-        if(dataIntent != null){ submitData(dataIntent.id_user) }
+        Toast.makeText(this, "$dataIdUser", Toast.LENGTH_SHORT).show()
 
+        binding.refreshLayout.setOnRefreshListener{
+            recreate()
+            showData()
+            binding.refreshLayout.isRefreshing = false
+        }
+
+        showData()
+        submitData(dataIdUser)
+    }
+
+    private fun showData(){
+        taskViewModel.statusByIdUser.observe(this) { status ->
+            val listDropDown = mutableListOf<String>()
+            status.forEach {
+                listDropDown.add(it.nameStatus.toString())
+            }
+            dropDownMenu(listDropDown)
+        }
     }
 
 
-
-    // Set DropDownMenu
-    private fun dropDownMenu(){
-        val data = resources.getStringArray(R.array.status)
+    private fun dropDownMenu(data : List<String>){
         val adapter = ArrayAdapter(this,R.layout.dropdown_item,data)
+        binding.tvStatusTask.isEnabled = false
         with(binding.tvStatusTask){
             setAdapter(adapter)
             onItemClickListener = this@AddActivity
         }
     }
 
-    // Set DropDown Menu OnClick
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val a = taskViewModel.statusByIdUser.value
         val item = parent?.getItemAtPosition(position).toString()
-        resultDropDown = item
-
+        Toast.makeText(this, "${a?.get(position)?.idStatusTask}", Toast.LENGTH_SHORT).show()
+        resultDropDown = a?.get(position)?.idStatusTask!!.toInt()
 
     }
 

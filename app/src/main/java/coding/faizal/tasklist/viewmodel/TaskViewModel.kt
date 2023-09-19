@@ -18,6 +18,13 @@ class TaskViewModel(context : Context) : ViewModel() {
     var data : LiveData<List<Task>>
     lateinit var task : LiveData<List<TaskEntity>>
     lateinit var status : LiveData<List<StatusEntity>>
+    lateinit var user : LiveData<MutableList<UserEntity>>
+
+    private var _userById : MutableLiveData<UserEntity> = MutableLiveData()
+    val userById : LiveData<UserEntity> = _userById
+
+    private var _statusByIdUser : MutableLiveData<List<StatusEntity>> = MutableLiveData()
+    var statusByIdUser : MutableLiveData<List<StatusEntity>> = _statusByIdUser
 
     private val database = RoomDB.buildDatabase(context)
     var dao: TaskDao = database.dao()
@@ -27,15 +34,32 @@ class TaskViewModel(context : Context) : ViewModel() {
         data = dao.getAllTasksWithUserAndStatus()
         task = dao.getAllTask()
         status = dao.getAllStatus()
+        user = dao.getAllUser()
+
     }
 
-    fun addTask(task : String,resultDropDown : String,idUser : Int){
+
+    fun getUserById(id : Int){
+       viewModelScope.launch(Dispatchers.IO){
+           val data = dao.getUserById(id)
+           _userById.postValue(data)
+       }
+    }
+
+    fun getStatusByIdUser(id : Int){
+        viewModelScope.launch(Dispatchers.IO){
+            val data = dao.getStatusByIdUser(id)
+            _statusByIdUser.postValue(data)
+        }
+    }
+
+    fun addTask(task : String,resultDropDown : Int,idUser : Int){
         viewModelScope.launch(Dispatchers.IO){
             val newTask = TaskEntity(
                 idTaskList = 0,
                 nameTask = task,
                 id_user = idUser,
-                id_status_task = if(resultDropDown == "Ongoing") 1 else 2
+                id_status_task = resultDropDown
             )
             dao.insertData(newTask)
 //            val status1 = StatusEntity(0, resultDropDown)
